@@ -1,0 +1,30 @@
+<!-- chat/templates/index.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-Time Chat</title>
+</head>
+<body>
+    <h1>Real-Time Chat</h1>
+    <div id="chat"></div>
+
+    <script>
+        const chatSocket = new WebSocket('ws://' + window.location.host + '/ws/chat/');
+
+        chatSocket.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            document.querySelector('#chat').innerHTML += '<br>' + data.message;
+        };
+
+        document.querySelector('form').onsubmit = function (e) {
+            e.preventDefault();
+            const messageInputDom = document.querySelector('#message');
+            chatSocket.send(JSON.stringify({
+                'message': messageInputDom.value
+            }));
+            messageInputDom.value = '';
+        };
+    </script>
+</body>
+</html>
